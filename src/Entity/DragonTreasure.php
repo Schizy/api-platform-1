@@ -34,6 +34,12 @@ use function Symfony\Component\String\u;
 //        new Put(),
 //        new Delete()
     ],
+    formats: [
+        'json',
+        'jsonld',
+        'jsonhal',
+        'csv' => 'text/csv',
+    ],
     normalizationContext: [
         'groups' => ['treasure:read']
     ],
