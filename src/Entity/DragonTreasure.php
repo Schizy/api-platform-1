@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
@@ -35,21 +36,19 @@ use function Symfony\Component\String\u;
 //        new Put(),
 //        new Delete()
     ],
-    formats: [
-        'jsonld',
-        'json',
-        'jsonhal',
-        'csv' => 'text/csv',
-    ],
-    normalizationContext: [
-        'groups' => ['treasure:read']
-    ],
-    denormalizationContext: [
-        'groups' => ['treasure:write']
-    ],
+    formats: ['jsonld', 'json', 'jsonhal', 'csv' => 'text/csv'],
+    normalizationContext: ['groups' => ['treasure:read']],
+    denormalizationContext: ['groups' => ['treasure:write']],
     paginationItemsPerPage: 10,
 )]
+#[ApiResource(
+    uriTemplate: '/users/{user_id}/treasures.{_format}',
+    shortName: 'Treasure',
+    operations: [new GetCollection()],
+    uriVariables: ['user_id' => new Link(fromProperty: 'dragonTreasures', fromClass: User::class)],
+)]
 #[ApiFilter(PropertyFilter::class)]
+#[ApiFilter(SearchFilter::class, properties: ['owner.username' => 'partial'])]
 class DragonTreasure
 {
     #[ORM\Id]
@@ -93,6 +92,7 @@ class DragonTreasure
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['treasure:read', 'treasure:write'])]
     #[Assert\Valid]
+    #[ApiFilter(SearchFilter::class, strategy: 'exact')]
     private ?User $owner = null;
 
     public function __construct(string $name)

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Link;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,6 +20,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']],
+)]
+#[ApiResource(
+    uriTemplate: '/treasures/{treasure_id}/owner.{_format}',
+    operations: [new Get()],
+    uriVariables: ['treasure_id' => new Link(fromProperty: 'owner', fromClass: DragonTreasure::class)],
+    normalizationContext: ['groups' => ['user:read']],
 )]
 #[UniqueEntity(fields: ['username'], message: 'This username already exists.')]
 #[UniqueEntity(fields: ['email'], message: 'This email already exists.')]
