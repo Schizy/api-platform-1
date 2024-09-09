@@ -58,14 +58,14 @@ class DragonTreasure
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['treasure:read', 'treasure:write', 'user:read'])]
+    #[Groups(['treasure:read', 'treasure:write', 'user:read', 'user:write'])]
     #[ApiFilter(SearchFilter::class, strategy: 'partial')]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50, maxMessage: 'Describe your loot in 50 chars or less')]
     private readonly string $name;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups('treasure:read')]
+    #[Groups(['treasure:read', 'user:write'])]
     #[ApiFilter(SearchFilter::class, strategy: 'partial')]
     #[Assert\NotBlank]
     private ?string $description = null;
